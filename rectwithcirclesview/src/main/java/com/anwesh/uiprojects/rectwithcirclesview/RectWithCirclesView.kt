@@ -187,4 +187,26 @@ class RectWithCirclesView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : RectWithCirclesView) {
+
+        private val animator : Animator = Animator(view)
+        private val rwc : RectWithCircles = RectWithCircles(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            rwc.draw(canvas, paint)
+            animator.animate {
+                rwc.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            rwc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
