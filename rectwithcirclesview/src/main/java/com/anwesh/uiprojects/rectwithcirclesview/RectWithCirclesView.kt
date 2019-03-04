@@ -22,6 +22,7 @@ val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#311B92")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val rFactor : Int = 6
+val wFactor : Int = 3
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -35,8 +36,9 @@ fun Canvas.drawRWCNode(i : Int, scale : Float, paint : Paint) {
     val h : Float = height.toFloat()
     val gap : Float = h / (nodes + 1)
     val size : Float = gap / sizeFactor
-    val xGap : Float = (2 * size) / (circles + 1)
-    val r : Float = xGap / rFactor
+    val xGap : Float = (2 * size) / (circles)
+    val r : Float = size / rFactor
+    val w2 : Float = size / wFactor
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     paint.strokeCap = Paint.Cap.ROUND
@@ -46,11 +48,11 @@ fun Canvas.drawRWCNode(i : Int, scale : Float, paint : Paint) {
     save()
     translate(w / 2, gap * (i + 1))
     rotate(90f * sc2)
-    drawRect(RectF(-r, -size, r, size), paint)
+    drawRect(RectF(-size, -w2, size, w2), paint)
     for (j in 0..(circles - 1)) {
         val sc : Float = sc1.divideScale(j, circles)
         save()
-        translate(-size + r + xGap * i, 0f)
+        translate(-size + r + w2 / wFactor + xGap * j, 0f)
         drawArc(RectF(-r, -r, r, r), -90f, 360f * sc, false, paint)
         restore()
     }
